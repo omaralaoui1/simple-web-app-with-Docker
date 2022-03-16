@@ -14,22 +14,19 @@ git 'https://github.com/omaralaoui1/simple-web-app-with-Docker.git'
 stage('Building our image') {
 steps{
 script {
-dockerImage = docker.build registry + ":$BUILD_NUMBER"
+app = docker.build("app_web/test")
 }
 }
 }
 stage('Deploy our image') {
 steps{
 script {
-docker.withRegistry( '', registryCredential ) {
-dockerImage.push()
+docker.withRegistry('https://registry.hub.docker.com', 'git') {                  
+  app.push("${env.BUILD_NUMBER}")            
+       app.push("latest")        
+              } 
 }
 }
-}
-}
-stage('Cleaning up') {
-steps{
-sh "docker rmi $registry:$BUILD_NUMBER"
 }
 }
 }
